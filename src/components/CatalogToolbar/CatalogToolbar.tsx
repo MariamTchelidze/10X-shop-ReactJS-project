@@ -3,6 +3,7 @@ import { fetchCategories } from "../../api/products";
 import type { CatalogSortOption, Category } from "../../types/catalog";
 
 interface CatalogToolbarProps {
+  focusSearch?: boolean;
   searchValue: string;
   category: string;
   sort: CatalogSortOption;
@@ -20,6 +21,7 @@ const sortOptions: { value: CatalogSortOption; label: string }[] = [
 ];
 
 export function CatalogToolbar({
+  focusSearch = false,
   searchValue,
   category,
   sort,
@@ -66,6 +68,7 @@ export function CatalogToolbar({
         <input
           id="catalog-search"
           type="search"
+          autoFocus={focusSearch}
           value={searchValue}
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder="Search products"

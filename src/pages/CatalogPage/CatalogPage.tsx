@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { fetchProducts } from "../../api/products";
 import { CatalogToolbar } from "../../components/CatalogToolbar/CatalogToolbar";
 import { Pagination } from "../../components/Pagination/Pagination";
@@ -16,6 +16,9 @@ const SEARCH_DEBOUNCE_MS = 400;
 
 export function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const routeState = location.state as { focusSearch?: boolean } | null;
+  const focusSearch = routeState?.focusSearch === true;
   const query = searchParams.get("q")?.trim() ?? "";
   const rawCategory = searchParams.get("category") ?? "";
   const category = query ? "" : rawCategory;
@@ -187,6 +190,7 @@ export function CatalogPage() {
       </header>
 
       <CatalogToolbar
+        focusSearch={focusSearch}
         searchValue={searchInput}
         category={category}
         sort={sort}
