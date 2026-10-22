@@ -26,3 +26,5 @@ export interface ProductsResponse {
   skip: number;
   limit: number;
 }
+
+export type { Category } from "./catalog";
