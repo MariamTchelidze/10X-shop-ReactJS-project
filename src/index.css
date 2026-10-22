@@ -1,11 +1,29 @@
 @import "tailwindcss";
 
+@theme {
+  --color-zara-black: var(--zara-black);
+  --color-zara-white: var(--zara-white);
+  --color-zara-gray: var(--zara-gray);
+  --color-zara-light: var(--zara-light);
+  --color-zara-border: var(--zara-border);
+  --font-editorial: var(--zara-font-editorial);
+  --font-sans: var(--zara-font-sans);
+}
+
 :root {
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  --zara-black: #000000;
+  --zara-white: #ffffff;
+  --zara-gray: #767676;
+  --zara-light: #f9f9f9;
+  --zara-border: #e5e5e5;
+  --zara-font-editorial: "Playfair Display", Georgia, serif;
+  --zara-font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  font-family: var(--zara-font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  color: #0f172a;
-  background: #ffffff;
+  color: var(--zara-black);
+  background: var(--zara-white);
 }
 
 body {
