@@ -2,6 +2,7 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 import type { Product } from "../types/product";
 import type { CartItem } from "../types/cart";
 import { useToast } from "./ToastContext";
+import { useAuth } from "./AuthContext";
 
 interface CartContextValue {
   items: CartItem[];
@@ -22,8 +23,13 @@ interface CartProviderProps {
 export function CartProvider({ children }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>([]);
   const { addToast } = useToast();
+  const { user } = useAuth();
 
   const addItem = (product: Product, quantity: number): boolean => {
+    if (!user.isLoggedIn) {
+      addToast("for adding the product to the cart please log in first", "info");
+      return false;
+    }
     if (!Number.isInteger(quantity) || quantity < 1 || product.stock < 1) {
       return false;
     }

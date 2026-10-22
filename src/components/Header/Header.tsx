@@ -51,6 +51,7 @@ export function Header() {
   const { itemCount } = useCart();
   const location = useLocation();
   const navigate = useNavigate();
+  const displayName = user.fullName || user.email || user.username;
 
   const handleSearchClick = (): void => {
     if (location.pathname === "/") {
@@ -95,10 +96,10 @@ export function Header() {
           {user.isLoggedIn ? (
             <Link
               to="/profile"
-              aria-label={`Profile for ${user.username}`}
+              aria-label={`Profile for ${displayName}`}
               className="max-w-20 truncate text-[10px] font-medium tracking-[0.12em] text-zara-gray transition-opacity hover:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zara-black sm:max-w-32 sm:text-xs"
             >
-              {user.username || "PROFILE"}
+              {displayName || "PROFILE"}
             </Link>
           ) : (
             <Link

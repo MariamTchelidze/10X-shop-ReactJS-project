@@ -5,16 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 interface ProfileDetails { name: string; email: string; address: string }
 
 export function ProfilePage() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateProfile } = useAuth();
   const navigate = useNavigate();
-  const storageKey = `10x-shop-profile-${user.username}`;
   const [details, setDetails] = useState<ProfileDetails>(() => {
-    try {
-      const saved = localStorage.getItem(storageKey);
-      return saved ? JSON.parse(saved) as ProfileDetails : { name: user.username, email: "", address: "" };
-    } catch {
-      return { name: user.username, email: "", address: "" };
-    }
+    return { name: user.fullName || user.username, email: user.email, address: user.address };
   });
   const [saved, setSaved] = useState(false);
 
@@ -24,7 +18,7 @@ export function ProfilePage() {
   };
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    localStorage.setItem(storageKey, JSON.stringify(details));
+    updateProfile({ fullName: details.name, email: details.email, address: details.address });
     setSaved(true);
   };
 
