@@ -1,4 +1,5 @@
 import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router";
+import { Footer } from "./components/Footer/Footer";
 import { Header } from "./components/Header/Header";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
@@ -16,9 +17,7 @@ function AppLayout() {
       <div className="flex-1">
         <Outlet />
       </div>
-      <footer className="border-t border-zara-border px-4 py-6 text-center text-[10px] uppercase tracking-[0.16em] text-zara-gray">
-        10X Shop
-      </footer>
+      <Footer />
     </div>
   );
 }
