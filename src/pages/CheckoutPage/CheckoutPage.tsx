@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate } from "react-router";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
+import { saveOrder } from "../../utils/orders";
 import { formatPrice } from "../../utils/product";
 
 interface CheckoutValues {
@@ -26,6 +28,7 @@ const emptyValues: CheckoutValues = {
 
 export function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
+  const { user } = useAuth();
   const [values, setValues] = useState<CheckoutValues>(emptyValues);
   const [errors, setErrors] = useState<CheckoutErrors>({});
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
@@ -79,7 +82,16 @@ export function CheckoutPage() {
       return;
     }
 
-    setOrderTotal(subtotal);
+    const orderTotal = subtotal;
+    saveOrder({
+      id: `10X-${Date.now().toString(36).toUpperCase()}`,
+      username: user.username,
+      date: new Date().toISOString(),
+      items: items.map((item) => ({ ...item })),
+      total: orderTotal,
+      status: "Placed",
+    });
+    setOrderTotal(orderTotal);
     setIsOrderPlaced(true);
     clearCart();
   };
