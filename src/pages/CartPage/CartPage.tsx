@@ -1,9 +1,30 @@
+import { useState, type FormEvent } from "react";
 import { Link } from "react-router";
 import { useCart } from "../../context/CartContext";
+import { useToast } from "../../context/ToastContext";
 import { discountedPrice, formatPrice } from "../../utils/product";
 
 export function CartPage() {
   const { items, subtotal, removeItem, updateQuantity } = useCart();
+  const { addToast } = useToast();
+  const [promoInput, setPromoInput] = useState("");
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [promoError, setPromoError] = useState("");
+  const discount = promoApplied ? subtotal * 0.1 : 0;
+  const total = subtotal - discount;
+
+  const applyPromoCode = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (promoInput.trim().toUpperCase() !== "10X10") {
+      setPromoApplied(false);
+      setPromoError("This promo code is not valid.");
+      addToast("INVALID PROMO CODE", "error");
+      return;
+    }
+    setPromoApplied(true);
+    setPromoError("");
+    addToast("PROMO CODE APPLIED (-10%)", "success");
+  };
 
   if (items.length === 0) {
     return (
@@ -93,9 +114,42 @@ export function CartPage() {
             <span>Subtotal</span>
             <span>{formatPrice(subtotal)}</span>
           </div>
+          <form onSubmit={applyPromoCode} className="mt-6">
+            <label htmlFor="promo-code" className="mb-2 block text-xs uppercase tracking-[0.12em] text-zara-gray">
+              Promo code
+            </label>
+            <div className="flex min-w-0 gap-2">
+              <input
+                id="promo-code"
+                name="promoCode"
+                value={promoInput}
+                onChange={(event) => {
+                  setPromoInput(event.target.value);
+                  setPromoError("");
+                }}
+                aria-invalid={promoError.length > 0}
+                aria-describedby={promoError ? "promo-error" : undefined}
+                placeholder="Enter code"
+                className="min-h-11 min-w-0 flex-1 border border-zara-border px-3 text-sm uppercase text-zara-black placeholder:normal-case placeholder:text-zara-gray focus:border-zara-black focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="min-h-11 shrink-0 border border-zara-black px-4 text-xs font-medium uppercase tracking-[0.12em] text-zara-black transition-colors hover:bg-zara-black hover:text-zara-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zara-black"
+              >
+                Apply
+              </button>
+            </div>
+            {promoError && <p id="promo-error" role="alert" className="mt-2 text-xs text-red-700">{promoError}</p>}
+          </form>
+          {promoApplied && (
+            <div className="mt-4 flex justify-between gap-4 text-sm text-zara-gray">
+              <span>Promo discount (10%)</span>
+              <span>−{formatPrice(discount)}</span>
+            </div>
+          )}
           <div className="mt-4 flex justify-between gap-4 border-t border-zara-border pt-4 text-sm font-medium text-zara-black">
             <span>Total</span>
-            <span>{formatPrice(subtotal)}</span>
+            <span>{formatPrice(total)}</span>
           </div>
           <Link
             to="/checkout"

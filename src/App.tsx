@@ -3,6 +3,7 @@ import { Footer } from "./components/Footer/Footer";
 import { Header } from "./components/Header/Header";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { ToastProvider } from "./context/ToastContext";
 import { CartPage } from "./pages/CartPage/CartPage";
 import { CatalogPage } from "./pages/CatalogPage/CatalogPage";
 import { CheckoutPage } from "./pages/CheckoutPage/CheckoutPage";
@@ -50,8 +51,9 @@ export function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <CartProvider>
-          <Routes>
+        <ToastProvider>
+          <CartProvider>
+            <Routes>
             <Route element={<AppLayout />}>
               <Route path="/" element={<CatalogPage />} />
               <Route path="/login" element={<LoginPage />} />
@@ -63,8 +65,9 @@ export function App() {
               </Route>
               <Route path="*" element={<NotFoundPage />} />
             </Route>
-          </Routes>
-        </CartProvider>
+            </Routes>
+          </CartProvider>
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   );

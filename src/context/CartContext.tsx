@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { Product } from "../types/product";
 import type { CartItem } from "../types/cart";
+import { useToast } from "./ToastContext";
 
 interface CartContextValue {
   items: CartItem[];
@@ -20,6 +21,7 @@ interface CartProviderProps {
 
 export function CartProvider({ children }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const { addToast } = useToast();
 
   const addItem = (product: Product, quantity: number): boolean => {
     if (!Number.isInteger(quantity) || quantity < 1 || product.stock < 1) {
@@ -54,13 +56,19 @@ export function CartProvider({ children }: CartProviderProps) {
       return [...currentItems, cartItem];
     });
 
+    addToast("ADDED TO BAG", "success");
+
     return true;
   };
 
   const removeItem = (productId: number): void => {
+    if (!items.some((item) => item.productId === productId)) {
+      return;
+    }
     setItems((currentItems) =>
       currentItems.filter((item) => item.productId !== productId),
     );
+    addToast("ITEM REMOVED", "info");
   };
 
   const updateQuantity = (productId: number, quantity: number): void => {
@@ -78,7 +86,11 @@ export function CartProvider({ children }: CartProviderProps) {
   };
 
   const clearCart = (): void => {
+    if (items.length === 0) {
+      return;
+    }
     setItems([]);
+    addToast("CART CLEARED", "info");
   };
 
   const itemCount = items.reduce((count, item) => count + item.quantity, 0);
